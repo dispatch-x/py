@@ -113,17 +113,17 @@ class ui:
     def go_to_room(self):
         bold.print("list rooms")
         res=self.conn.list_rooms()
-        if "res"=="bad_credentials":
+        if res=="bad_credentials":
             orange.print("Sorry, could you login again?")
             self.login()
         else:
             options={}
-            options["exit this menu"]=printcallback({
+            options["exit this menu"]=[printcallback,[{
                                         "new room": self.new_room,
                                         "list rooms": self.go_to_room,
                                         "get info on a user": self.get_user_info
-                                    })
-            for room in list(res):
+                                    }]]
+            for room in (res):
                 options[room["alias"]]=[self.switch_to_room, [room]]
             printcallback(options)
 
