@@ -21,12 +21,17 @@ class dx:
         return "all_good"
     def login(self, uname: str, password: str):
         res=self.ping(f'/user/{uname}/auth', {"password": password})
-        if res['code']!=401:
-            self.uname=uname
-            self.oauth_key=res['key']
-            return "all_good"
+        if "code" in res:
+            match res['code']:
+                case 401:
+                    return "bad_credentials"
+                case _:
+                    self.uname=uname
+                    self.oauth_key=res['key']
+                    return "all_good"
         else:
-            return "bad_credentials"
+            return "bad_response"    
+            
     def new_room(self, alias: str, users: str):
         res=self.ping("/rooms/create", {"alias": alias, "users": users, "user": self.uname, "oauth_key": self.oauth_key})
         if "code" in res:
@@ -81,6 +86,18 @@ class dx:
                     return "no_such_user"
                 case 200:
                     return res
+                case _:
+                    return "bad_response"
+        else:
+            return "bad_response"
+    def set_status(self, status):
+        res=self.ping(f'/user/{self.uname}/status', {"oauth_key": self.oauth_key, "status": status})
+        if "code" in res:
+            match res["code"]:
+                case 200:
+                    return "all_good"
+                case 422:
+                    return "profanity"
                 case _:
                     return "bad_response"
         else:

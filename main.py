@@ -177,8 +177,20 @@ class ui:
                 red.print("There is no such user")
             case _:
                 if type(res)==dict:
-                    print(f"User {res['username']} joined Dispatchx {relative_time(int(res['joined']))}. They {'are' if res['admin']==True else 'are not'} an admin.")
+                    print(f"User {res['username']} joined Dispatchx {relative_time(int(res['joined']))}. They {'are' if res['admin']==True else 'are not'} an admin. Their status is '{res['status']}'.")
 
+    def set_status(self):
+        bold.print("set status")
+        status=str(input("Please input a status (no profanity please): "))
+        res=self.conn.set_status(status)
+        match res:
+            case "bad_response":
+                orangered.print("An error occurred on our end (likely http 500)")
+            case "profanity":
+                red.print("No profanity please")
+                self.set_status()
+            case "all_good":
+                green.print("All good!")
 try:
     main=ui()
     printcallback({
@@ -189,7 +201,8 @@ try:
         printcallback({
             "new room": main.new_room,
             "list rooms": main.go_to_room,
-            "get info on a user": main.get_user_info
+            "get info on a user": main.get_user_info,
+            "set my status": main.set_status
         })
 except KeyboardInterrupt:
     exit(130)
