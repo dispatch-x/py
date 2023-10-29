@@ -132,9 +132,9 @@ class ui:
         print(f"{room['alias']}'s members are: {formatlist(room['members'],self.conn.uname)}")
         while True:
             printcallback({
+                "exit this menu": self.go_to_room,
                 "post": [self.post, [room]],
-                "messages": [self.messages, [room]],
-                "exit this menu": self.go_to_room
+                "messages": [self.messages, [room]]
             })
     def post(self, room):
         bold.print("post")
