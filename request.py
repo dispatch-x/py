@@ -8,8 +8,8 @@ class dx:
         url=self.base_url+route
         response=requests.get(url, params)
         return response.json()
-    def new_user(self, uname: str, oauth_key: str):
-        res=self.ping('/users/new', {"user": uname, "oauth_key": oauth_key})
+    def new_user(self, uname: str, password: str):
+        res=self.ping('/users/new', {"user": uname, "password": password})
         if "code" in res:
             match res["code"]:
                 case 409:
